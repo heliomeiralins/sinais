@@ -39,11 +39,12 @@ class Circuit(metaclass=ABCMeta):
         pass
 
     def output(self, V, time, step, plot=False):
-        i = self.integrate_current(V, time, step)
-        i = i[:, 0]
+        I = self.integrate_current(V, time, step)
+        i_prime = I[:, 1] if np.shape(I)[1] > 1 else None
+        i = I[:, 0]
         Vin = lambdify(Circuit.t, V, 'numpy')
         time_range = np.arange(0, time, step)
-        output = self._output(Vin, i, time_range)
+        output = self._output(Vin, i, i_prime, time_range)
         if plot:
             Vin = np.vectorize(Vin)
             plt.plot(time_range, Vin(time_range))
@@ -61,7 +62,7 @@ class RCCircuit(Circuit):
     def initial(self, v0):
         return v0 / self._r
 
-    def _output(self, Vin, i, time_range):
+    def _output(self, Vin, i, i_prime, time_range):
         return np.add(Vin(time_range), -self._r * i)
 
 
@@ -76,5 +77,35 @@ class RLCircuit(Circuit):
         # corrente inicial é zero.
         return 0
 
-    def _output(self, Vin, i, time_range):
+    def _output(self, Vin, i, i_prime, time_range):
         return np.add(Vin(time_range), -self._r * i)
+
+
+class RLCCircuit(Circuit):
+
+    def f(self, y, t, Vin, Vin_prime):
+        return [y[1], Vin_prime(t) / self._l - y[0] / (self._l * self._c) - self._r * y[1] / self._l]
+
+    def initial(self, v0):
+        # o indutor não deixa a corrente mudar instantaneamente, logo a
+        # corrente inicial é zero.
+        # A derivada da corrente é determinada pela tensão do indutopr
+        return [0, v0 / self._l]
+
+
+class RLCCircuit1(RLCCircuit):
+
+    def _output(self, Vin, i, i_prime, time_range):
+        return self._r * i
+
+
+class RLCCircuit2(RLCCircuit):
+
+    def _output(self, Vin, i, i_prime, time_range):
+        return np.add(Vin(time_range), -self._r * i)
+
+
+class RLCCircuit3(RLCCircuit):
+
+    def _output(self, Vin, i, i_prime, time_range):
+        return Vin(time_range) - self._r * i - self._l * i_prime
