@@ -63,3 +63,18 @@ class RCCircuit(Circuit):
 
     def _output(self, Vin, i, time_range):
         return np.add(Vin(time_range), -self._r * i)
+
+
+class RLCircuit(Circuit):
+
+    def f(self, i, t, Vin, Vin_prime):
+        """i' = -Ri/L + Vin/L"""
+        return -i * self._r / self._l + Vin(t) / self._l
+
+    def initial(self, v0):
+        # o indutor não deixa a corrente mudar instantaneamente, logo a
+        # corrente inicial é zero.
+        return 0
+
+    def _output(self, Vin, i, time_range):
+        return np.add(Vin(time_range), -self._r * i)
