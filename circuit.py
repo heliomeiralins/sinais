@@ -47,9 +47,10 @@ class Circuit(metaclass=ABCMeta):
         output = self._output(Vin, i, i_prime, time_range)
         if plot:
             Vin = np.vectorize(Vin)
+            plt.clf()
             plt.plot(time_range, Vin(time_range))
             plt.plot(time_range, output)
-            plt.show()
+            plt.savefig('test')
         return output
 
 
@@ -84,7 +85,10 @@ class RLCircuit(Circuit):
 class RLCCircuit(Circuit):
 
     def f(self, y, t, Vin, Vin_prime):
-        return [y[1], Vin_prime(t) / self._l - y[0] / (self._l * self._c) - self._r * y[1] / self._l]
+        return [y[1],
+                Vin_prime(t) / self._l -
+                y[0] / (self._l * self._c) -
+                self._r * y[1] / self._l]
 
     def initial(self, v0):
         # o indutor não deixa a corrente mudar instantaneamente, logo a
@@ -93,19 +97,19 @@ class RLCCircuit(Circuit):
         return [0, v0 / self._l]
 
 
-class RLCCircuit1(RLCCircuit):
+class RLCCircuit1(RLCCircuit):  # Vr
 
     def _output(self, Vin, i, i_prime, time_range):
         return self._r * i
 
 
-class RLCCircuit2(RLCCircuit):
+class RLCCircuit2(RLCCircuit):  # Vl + Vc
 
     def _output(self, Vin, i, i_prime, time_range):
         return np.add(Vin(time_range), -self._r * i)
 
 
-class RLCCircuit3(RLCCircuit):
+class RLCCircuit3(RLCCircuit):  # Vc
 
     def _output(self, Vin, i, i_prime, time_range):
         return Vin(time_range) - self._r * i - self._l * i_prime
