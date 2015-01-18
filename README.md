@@ -19,4 +19,4 @@ Alguns detalhes:
 * Uma classe será criada para cada circuito do problema. Basta instanciar os métodos corretamente.
 * O método 'f' representa o sistema de equações diferenciais para a corrente. Nos casos do RC e RL, f() é simplesmente a derivada da corrente. No caso RLC, é um vetor cujo primeiro atributo é a derivada da corrente e o segundo atributo sua segunda derivada. ( posso explicar melhor sobre como esse sistema é formado) ( isso foi feito pq o numpy só integra assim..)
 * O método 'initial' representa as condições iniciais do circuito.
-* O método 'output' integra a corrente(usando integrate_current) e depois faz o cálculo da saída para cada circuito. pode ser chamado com plot=True para plotar a saída.
+* O método '_output' cálcula a saída do circuito dada a corrente.

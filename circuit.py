@@ -34,10 +34,22 @@ class Circuit(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def output(self, V, time, step):
-        r = self.integrate_current(V, time, step)
-        r = r[:, 0]
-        return r
+    def _output():
+        """Calculate the output, given the current"""
+        pass
+
+    def output(self, V, time, step, plot=False):
+        i = self.integrate_current(V, time, step)
+        i = i[:, 0]
+        Vin = lambdify(Circuit.t, V, 'numpy')
+        time_range = np.arange(0, time, step)
+        output = self._output(Vin, i, time_range)
+        if plot:
+            Vin = np.vectorize(Vin)
+            plt.plot(time_range, Vin(time_range))
+            plt.plot(time_range, output)
+            plt.show()
+        return output
 
 
 class RCCircuit(Circuit):
@@ -49,12 +61,5 @@ class RCCircuit(Circuit):
     def initial(self, v0):
         return v0 / self._r
 
-    def output(self, V, time, step, plot=False):
-        r = super().output(V, time, step)
-        Vin = lambdify(Circuit.t, V, 'numpy')
-        time_range = np.arange(0, time, step)
-        ret = np.add(Vin(time_range), -self._r * r)
-        if plot:
-            plt.plot(time_range, ret)
-            plt.show()
-        return ret
+    def _output(self, Vin, i, time_range):
+        return np.add(Vin(time_range), -self._r * i)
