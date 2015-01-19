@@ -14,12 +14,12 @@ class Circuit(metaclass=ABCMeta):
         self._c = C
         self._l = L
 
-    def integrate_current(self, V, time, step):
+    def integrate_current(self, V, time, nsteps):
         Vin_prime = lambdify(Circuit.t, diff(V, Circuit.t), 'numpy')
         Vin = lambdify(Circuit.t, V, 'numpy')
         result = odeint(self.f,  # system of differential equations
                         self.initial(Vin(0)),  # initial conditions
-                        np.arange(0, time, step),  # time
+                        np.linspace(0, time, nsteps),  # time
                         args=(Vin, Vin_prime))  # passes as arguments to self.f
         return result
 
@@ -38,12 +38,19 @@ class Circuit(metaclass=ABCMeta):
         """Calculate the output, given the current"""
         pass
 
-    def output(self, V, time, step, save=False, f='test'):
-        I = self.integrate_current(V, time, step)
+    @abstractmethod
+    def natural_time():
+        """Time that is sufficient to capture transient effects"""
+
+    def output(self, V, time=None, nsteps=100000, save=False, f='test'):
+        if time is None:
+            time = self.natural_time()
+
+        I = self.integrate_current(V, time, nsteps)
         i_prime = I[:, 1] if np.shape(I)[1] > 1 else None
         i = I[:, 0]
         Vin = lambdify(Circuit.t, V, 'numpy')
-        time_range = np.arange(0, time, step)
+        time_range = np.linspace(0, time, nsteps)
         output = self._output(Vin, i, i_prime, time_range)
         if save:
             Vin = np.vectorize(Vin)
@@ -66,6 +73,9 @@ class RCCircuit(Circuit):
     def _output(self, Vin, i, i_prime, time_range):
         return np.add(Vin(time_range), -self._r * i)
 
+    def natural_time(self):
+        return 5 * self._r * self._c
+
 
 class RLCircuit(Circuit):
 
@@ -81,6 +91,9 @@ class RLCircuit(Circuit):
     def _output(self, Vin, i, i_prime, time_range):
         return np.add(Vin(time_range), -self._r * i)
 
+    def natural_time(self):
+        return 5 * self._l / self._r
+
 
 class RLCCircuit(Circuit):
 
@@ -95,6 +108,16 @@ class RLCCircuit(Circuit):
         # corrente inicial é zero.
         # A derivada da corrente é determinada pela tensão do indutor
         return [0, v0 / self._l]
+
+    def natural_time(self):
+        alpha = self._r / (2 * self._l)
+        omega_squared = 1 / (self._l * self._c)
+        if alpha > omega_squared:  # overdamped
+            return 5 / (alpha - np.sqrt(alpha ** 2 - omega_squared))
+        elif alpha < omega_squared:
+            return 5 / alpha
+        else:
+            return 10 / alpha
 
 
 class RLCCircuit1(RLCCircuit):  # Vr

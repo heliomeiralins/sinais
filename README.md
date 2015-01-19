@@ -20,3 +20,4 @@ Alguns detalhes:
 * O método 'f' representa o sistema de equações diferenciais para a corrente. Nos casos do RC e RL, f() é simplesmente a derivada da corrente. No caso RLC, é um vetor cujo primeiro atributo é a derivada da corrente e o segundo atributo sua segunda derivada. ( posso explicar melhor sobre como esse sistema é formado) ( isso foi feito pq o numpy só integra assim..)
 * O método 'initial' representa as condições iniciais do circuito.
 * O método '_output' cálcula a saída do circuito dada a corrente.
+* O método 'natural_time' dá um período suficiente para capturar a dinâmica transiente do circuito. Pode parecer que esse método é um pouquinho de "roubo", mas seria trivial integrar o circuito, esperar ele estabilizar ( por exemplo, i < 0.0001) e pegar o tempo necessário para isso acontecer.
