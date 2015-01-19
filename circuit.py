@@ -38,14 +38,14 @@ class Circuit(metaclass=ABCMeta):
         """Calculate the output, given the current"""
         pass
 
-    def output(self, V, time, step, plot=False, f='test'):
+    def output(self, V, time, step, save=False, f='test'):
         I = self.integrate_current(V, time, step)
         i_prime = I[:, 1] if np.shape(I)[1] > 1 else None
         i = I[:, 0]
         Vin = lambdify(Circuit.t, V, 'numpy')
         time_range = np.arange(0, time, step)
         output = self._output(Vin, i, i_prime, time_range)
-        if plot:
+        if save:
             Vin = np.vectorize(Vin)
             plt.clf()
             plt.plot(time_range, Vin(time_range))
