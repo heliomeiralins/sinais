@@ -21,3 +21,13 @@ Alguns detalhes:
 * O método 'initial' representa as condições iniciais do circuito.
 * O método '_output' cálcula a saída do circuito dada a corrente.
 * O método 'natural_time' dá um período suficiente para capturar a dinâmica transiente do circuito. Pode parecer que esse método é um pouquinho de "roubo", mas seria trivial integrar o circuito, esperar ele estabilizar ( por exemplo, i < 0.0001) e pegar o tempo necessário para isso acontecer.
+
+### Exemplo de uso
+
+    from sympy import Symbol, sin
+    from circuit import RLCCircuit1
+    t = Symbol('t')
+    V = sin(t)
+    c = RLCCircuit1(R=1,L=1,C=1)
+    c.output(v, save=True)
+
