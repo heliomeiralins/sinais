@@ -38,7 +38,7 @@ class Circuit(metaclass=ABCMeta):
         """Calculate the output, given the current"""
         pass
 
-    def output(self, V, time, step, plot=False):
+    def output(self, V, time, step, plot=False, f='test'):
         I = self.integrate_current(V, time, step)
         i_prime = I[:, 1] if np.shape(I)[1] > 1 else None
         i = I[:, 0]
@@ -50,7 +50,7 @@ class Circuit(metaclass=ABCMeta):
             plt.clf()
             plt.plot(time_range, Vin(time_range))
             plt.plot(time_range, output)
-            plt.savefig('test')
+            plt.savefig(f)
         return output
 
 
@@ -93,7 +93,7 @@ class RLCCircuit(Circuit):
     def initial(self, v0):
         # o indutor não deixa a corrente mudar instantaneamente, logo a
         # corrente inicial é zero.
-        # A derivada da corrente é determinada pela tensão do indutopr
+        # A derivada da corrente é determinada pela tensão do indutor
         return [0, v0 / self._l]
 
 
