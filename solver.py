@@ -43,6 +43,8 @@ def fit(c):
     fits = [(curve_fit(f, t, v), i) for i, f in enumerate(FUNCS)]
     (p, e), i = min(fits, key=lambda x: x[0][1])
     if e < 1e-10:
+        # imprime RC para o circuito 1 e L/R para o circuito 2
+        print("Circuito {}\tConstante de tempo: {}".format(i, p))
         return p, e, i + 1
     if v[0] > 0:
         print("RLC1")
@@ -52,8 +54,9 @@ def fit(c):
     else:
         print("RLC2")
         print("R/L = {}".format(-v[0]))
-    peaks = find_peaks_cwt(v, np.arange(1, max(t)))
-    print(peaks, t[peaks], v[peaks])
+    # print(curve_fit(fi3, t, v))
+    # peaks = find_peaks_cwt(v, np.arange(1, max(t)))
+    # print(peaks, t[peaks], v[peaks])
 
 
 def FFT(c):
