@@ -23,7 +23,7 @@ Seguindo essa metodologia, conseguiríamos encontrar qual o circuito em questão
 
 Apesar de inúmeras tentativas, não foi possível casar as funções de transferências com a transformada da saída ao impulso unitário e tivemos que simplificar nossa abordagem. Apesar dos gráficos das transformadas serem semelhantes aos gráficos esperados, os valores não batiam com o esperado e o fitting simplesmente não convergia.
 
-Decidimos então fazer o fitting diretamente na saída esperada por cada circuito no domínio do timpo. Isso funcionou perfeitamente para os casos RL e RC. Para os casos RLC, o fitting não convergiu e decidimos apelar para a voltagem de saída logo após o impulso. O sinal da voltagem determina o tipo de circuito RLC, e para os casos de RLC1 e RLC2 o valor de R/L.
+Decidimos então fazer o fitting diretamente na saída esperada por cada circuito no domínio do timpo. Isso funcionou perfeitamente para os casos RL e RC. Para os casos RLC, o fitting não convergiu e decidimos apelar para a voltagem de saída logo após o impulso. O sinal da voltagem determina o tipo de circuito RLC, e para os casos de RLC1 e RLC2, seu módulo determina o valor de R/L.
 
 Resumindo, para cada circuito dado, nós tentamos fazer o fitting com a saída esperada do RC e do RL. Caso o circuito seja identificado, i.e. o erro do fitting é 'desprezível', temos também a constante de tempo.
 Em seguida, analisamos diretamente o valor da voltagem logo após o impulso. Esse valor nos diz de qual circuito RLC se trata, e nós dá o valor de R/L para os circuitos RLC1 e RLC2.
