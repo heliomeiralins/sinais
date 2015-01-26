@@ -32,3 +32,12 @@ Todas essas tentativas foram implementadas em Python 3.4, usando as bibliotecas 
 
 * system.py. Neste arquivo, definimos os 5 circuitos através de suas funções de transferência e implementamos vários métodos para ajudar a visualizar as saídas e entender os circuitos ( ex. diagrama de Bode.).
 * solver.py. Neste arquivo, há uma interface para o usuário escolher o tipo de circuito e os parâmetros e, dentro das limitações do nosso projeto, ele identifica o circuito e imprime seus parâmetros.
+<<<<<<< HEAD
+
+## Observações da parte Prática
+
+O arquivo sinais.cpp não é exatamente o que foi usado nas simulações. A versão final ficou no computador do Grad de hardware, mas as alterações feitas foram replicadas por minha memória e infelizmente, sem testar depois. O algoritmo para calcular a constante de tempo está evidente.
+
+A entrada foi uma senóide de OFFSET 2v e Vpp 10mv, de modo que a função oscila entre 1.95 e 2.05V, simulando assim um tensão DC.
+=======
+>>>>>>> ba441233710ade516e8b02fe7191785b1bb31b56
