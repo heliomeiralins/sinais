@@ -28,8 +28,8 @@ def fi2(t, a):
     return - np.e**(-t / a) / a
 
 
-def fi3(t, a, b, c):
-    return a * np.e**(-b / 2) * np.cos(c * t)
+def fi3(t, a, w):
+    return 2 * a * np.e**(-a * t) * np.cos(np.sqrt(a**2 - w**2) * t)
 
 FUNCS = (fi1, fi2)
 
@@ -42,7 +42,7 @@ def fit(c):
     t, v = c.impulse_response()
     fits = [(curve_fit(f, t, v), i) for i, f in enumerate(FUNCS)]
     (p, e), i = min(fits, key=lambda x: x[0][1])
-    if e < 1e-10:
+    if e < 1e-25:
         # imprime RC para o circuito 1 e L/R para o circuito 2
         print("Circuito {}\tConstante de tempo: {}".format(i, p))
         return p, e, i + 1
